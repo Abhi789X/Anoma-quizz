@@ -1,42 +1,29 @@
-import { useState } from "react";
-import Quiz from "./Quiz";
-import Result from "./Result";
-import "./styles.css";
+import React, { useState } from 'react'
+import StartScreen from './components/StartScreen'
+import QuizScreen from './components/QuizScreen'
+import ResultScreen from './components/ResultScreen'
+import { questions } from './data/questions'
 
-function App() {
-  const [name, setName] = useState("");
-  const [start, setStart] = useState(false);
-  const [score, setScore] = useState(null);
+export default function App() {
+  const [username, setUsername] = useState('')
+  const [stage, setStage] = useState('start')
+  const [score, setScore] = useState(0)
 
-  const handleStart = () => setStart(true);
+  const handleStart = (name) => {
+    setUsername(name)
+    setStage('quiz')
+  }
+
+  const handleFinish = (finalScore) => {
+    setScore(finalScore)
+    setStage('result')
+  }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center glass">
-      {!start ? (
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold">Welcome to Anoma Quiz</h1>
-          <input
-            className="bg-gray-800 text-white p-2 rounded"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <br />
-          <button
-            className="bg-purple-600 px-4 py-2 rounded hover:bg-purple-700"
-            disabled={!name}
-            onClick={handleStart}
-          >
-            Play Quiz
-          </button>
-        </div>
-      ) : score === null ? (
-        <Quiz setScore={setScore} />
-      ) : (
-        <Result score={score} name={name} />
-      )}
+    <div className="min-h-screen flex items-center justify-center px-4">
+      {stage === 'start' && <StartScreen onStart={handleStart} />}
+      {stage === 'quiz' && <QuizScreen questions={questions} onFinish={handleFinish} />}
+      {stage === 'result' && <ResultScreen username={username} score={score} />}
     </div>
-  );
+  )
 }
-
-export default App;
